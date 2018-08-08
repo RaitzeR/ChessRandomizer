@@ -191,13 +191,15 @@
         var pieces = [];
 
         for(i = 0; i < document.getElementById(id).children.length; i++) {
+            var select = document.getElementById(id).children[i].getElementsByTagName("select")[0];
+            var char = select.options[select.selectedIndex].className;
+
             random_num = getRandom();
 
             var piece = {};
             piece.position = random_num;
 
-            var select = document.getElementById(id).children[i].getElementsByTagName("select")[0];
-            piece.char = select.options[select.selectedIndex].className;
+            piece.char = char;
 
             pieces.push(piece);
         }
@@ -205,9 +207,13 @@
         return pieces;
     }
 
-    function getRandom() {
+    function getRandom(char) {
         while(usedNumbers.length < 63) {
             var random_num = Math.floor(Math.random() * 64);
+            if((char === "p" || char === "P") && random_num < 8 || random_num > 54) {
+                continue;
+            }
+
             if(!usedNumbers.includes(random_num)) {
                 usedNumbers.push(random_num);
                 break;
