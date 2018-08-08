@@ -6,8 +6,14 @@
             list-style-type: none;
         }
     </style>
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css">
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="chessboardjs-0.3.0/js/chessboard-0.3.0.js"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -67,6 +73,7 @@
 <script>
 
     var usedNumbers = [];
+    var generated = 0;
     function clone(id) {
         var itm = document.getElementById(id).children[0];
         var cln = itm.cloneNode(true);
@@ -145,9 +152,9 @@
 
         url_container = document.getElementById("urls");
 
-        var div = document.createElement("div");
+        //var div = document.createElement("div");
         var a = document.createElement('a');
-        div.appendChild(a);
+        //div.appendChild(a);
 
         var new_url = document.createTextNode("Your game: " +url);
         a.appendChild(new_url);
@@ -156,7 +163,19 @@
         a.target = "_blank";
 
 
-        url_container.appendChild(div);
+        url_container.appendChild(a);
+        //url_container.appendChild(div);
+
+
+        var newBoardDiv = document.createElement("div");
+        newBoardDiv.id = "board" + generated;
+        newBoardDiv.style = "width:400px";
+
+        url_container.appendChild(newBoardDiv);
+
+        var chessBoard = ChessBoard(newBoardDiv.id, FEN);
+
+        generated++;
     }
 
     function getPieces(id) {
