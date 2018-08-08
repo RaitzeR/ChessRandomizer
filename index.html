@@ -90,6 +90,7 @@
         for(rank = 0; rank <= 7; rank++) {
             var fen_gap = 0;
             var visited_rank = false;
+            var reset_fen = false;
             for(rank_position = 0; rank_position <= 7; rank_position++) {
                 //This is one rank
                 if(usedNumbers.includes(current_position)) {
@@ -98,19 +99,28 @@
                     })
                     console.log("curr position", current_position);
                     console.log("piece here", piece_in_position[0]);
-                    if(fen_gap == 0) {
+                    if(fen_gap < 1) {
                         FEN = FEN + piece_in_position[0].char;
                     } else {
                         FEN = FEN + fen_gap.toString() + piece_in_position[0].char;
                     }
 
-                    fen_gap = 0;
+                    reset_fen = true;
 
                     visited_rank = true
                 }
+
+                current_position++;
+                fen_gap++;
+
+                if(reset_fen) {
+                    fen_gap = 0;
+                    reset_fen = false;
+                }
+
                 if(rank_position == 7) {
                     if(visited_rank) {
-                        if(fen_gap == 0) {
+                        if(fen_gap < 1) {
                             FEN = FEN + "/";
                         } else {
                             FEN = FEN + fen_gap.toString() + "/";
@@ -119,11 +129,10 @@
                         FEN = FEN + "8/";
                     }
                 }
-                current_position++;
-                fen_gap++;
             }
 
         }
+
 
         FEN = FEN.substring(0, FEN.length - 1);
 
@@ -144,6 +153,7 @@
         a.appendChild(new_url);
         a.title = "Your Game";
         a.href = url;
+        a.target = "_blank";
 
 
         url_container.appendChild(div);
