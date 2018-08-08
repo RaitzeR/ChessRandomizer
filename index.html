@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        li {
+            list-style-type: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <div>
+        WHITE
+        <li id="white">
+            <ul>
+                <select class="white_option">
+                    <option class="K">King</option>
+                    <option class="P">Pawn</option>
+                    <option class="B">Bishop</option>
+                    <option class="N">Knight</option>
+                    <option class="R">Rook</option>
+                    <option class="Q">Queen</option>
+                </select>
+            </ul>
+        </li>
+        <button onclick="clone('white')">+</button>
+    </div>
+
+    <div>
+        BLACK
+        <li id="black">
+            <ul>
+                <select class="black_option">
+                    <option class="k">King</option>
+                    <option class="p">Pawn</option>
+                    <option class="b">Bishop</option>
+                    <option class="n">Knight</option>
+                    <option class="r">Rook</option>
+                    <option class="q">Queen</option>
+                </select>
+            </ul>
+        </li>
+
+        <button onclick="clone('black')">+</button>
+    </div>
+    <div>
+
+        TO MOVE
+        <select id="tomove">
+            <option class="w">WHITE</option>
+            <option class="b">BLACK</option>
+        </select>
+
+    </div>
+
+    <button onclick="generate()">Generate Random</button>
+
+    <div id="urls">
+
+    </div>
+
+</body>
+</html>
+
+<script>
+
+    var usedNumbers = [];
+    function clone(id) {
+        var itm = document.getElementById(id).children[0];
+        var cln = itm.cloneNode(true);
+        document.getElementById(id).appendChild(cln);
+    }
+
+    function generate() {
+        usedNumbers = [];
+        var white_pieces = getPieces("white");
+        var black_pieces = getPieces("black");
+
+        var allPieces = white_pieces;
+        allPieces = allPieces.concat(black_pieces);
+        console.log("all Pieces", allPieces);
+
+        console.log("white pieces", white_pieces);
+        console.log("black pieces", black_pieces);
+
+        var current_position = 0;
+        var FEN = "";
+        for(rank = 0; rank <= 7; rank++) {
+            var fen_gap = 0;
+            var visited_rank = false;
+            for(rank_position = 0; rank_position <= 7; rank_position++) {
+                //This is one rank
+                if(usedNumbers.includes(current_position)) {
+                    var piece_in_position = allPieces.filter(obj => {
+                        return obj.position === current_position
+                    })
+                    console.log("curr position", current_position);
+                    console.log("piece here", piece_in_position[0]);
+                    if(fen_gap == 0) {
+                        FEN = FEN + piece_in_position[0].char;
+                    } else {
+                        FEN = FEN + fen_gap.toString() + piece_in_position[0].char;
+                    }
+
+                    fen_gap = 0;
+
+                    visited_rank = true
+                }
+                if(rank_position == 7) {
+                    if(visited_rank) {
+                        if(fen_gap == 0) {
+                            FEN = FEN + "/";
+                        } else {
+                            FEN = FEN + fen_gap.toString() + "/";
+                        }
+                    } else {
+                        FEN = FEN + "8/";
+                    }
+                }
+                current_position++;
+                fen_gap++;
+            }
+
+        }
+
+        FEN = FEN.substring(0, FEN.length - 1);
+
+        var tomove_select = document.getElementById("tomove");
+
+        FEN = FEN + " " + tomove_select.options[tomove_select.selectedIndex].className;
+        FEN = FEN + " KQkq -";
+
+        url = "https://lichess.org/editor/" + FEN.split(" ").join("_");
+
+        url_container = document.getElementById("urls");
+
+        var div = document.createElement("div");
+        var a = document.createElement('a');
+        div.appendChild(a);
+
+        var new_url = document.createTextNode("Your game: " +url);
+        a.appendChild(new_url);
+        a.title = "Your Game";
+        a.href = url;
+
+
+        url_container.appendChild(div);
+    }
+
+    function getPieces(id) {
+        var pieces = [];
+
+        for(i = 0; i < document.getElementById(id).children.length; i++) {
+            random_num = getRandom();
+
+            var piece = {};
+            piece.position = random_num;
+
+            var select = document.getElementById(id).children[i].getElementsByTagName("select")[0];
+            piece.char = select.options[select.selectedIndex].className;
+
+            pieces.push(piece);
+        }
+
+        return pieces;
+    }
+
+    function getRandom() {
+        while(usedNumbers.length < 63) {
+            var random_num = Math.floor(Math.random() * 64);
+            if(!usedNumbers.includes(random_num)) {
+                usedNumbers.push(random_num);
+                break;
+            }
+        }
+        return random_num;
+    }
+
+</script>
