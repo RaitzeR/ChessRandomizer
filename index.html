@@ -194,7 +194,7 @@
             var select = document.getElementById(id).children[i].getElementsByTagName("select")[0];
             var char = select.options[select.selectedIndex].className;
 
-            random_num = getRandom();
+            random_num = getRandom(char);
 
             var piece = {};
             piece.position = random_num;
@@ -210,7 +210,7 @@
     function getRandom(char) {
         while(usedNumbers.length < 63) {
             var random_num = Math.floor(Math.random() * 64);
-            if((char === "p" || char === "P") && random_num < 8 || random_num > 54) {
+            if((char === "p" || char === "P") && (random_num < 8 || random_num > 54)) {
                 continue;
             }
 
