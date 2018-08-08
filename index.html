@@ -5,6 +5,10 @@
         li {
             list-style-type: none;
         }
+        .inline {
+            display:inline-block;
+            text-align: center;
+        }
     </style>
     <link rel="stylesheet" href="css/chessboard-0.3.0.css">
     <meta charset="UTF-8">
@@ -17,8 +21,10 @@
 </head>
 <body>
 
-    <div>
+    <div class="inline">
+        <div>
         WHITE
+        </div>
         <li id="white">
             <ul>
                 <select class="white_option">
@@ -34,8 +40,10 @@
         <button onclick="clone('white')">+</button>
     </div>
 
-    <div>
-        BLACK
+    <div class="inline">
+        <div>
+            BLACK
+        </div>
         <li id="black">
             <ul>
                 <select class="black_option">
@@ -51,6 +59,8 @@
 
         <button onclick="clone('black')">+</button>
     </div>
+    <br>
+    <br>
     <div>
 
         TO MOVE
@@ -61,10 +71,14 @@
 
     </div>
 
-    <button onclick="generate()">Generate Random</button>
-
+    <br>
+    <br>
+    <button onclick="generate()">Generate Random Position</button>
+    <br>
+    <br>
     <div id="urls">
-
+        Your Game: <a id="url"></a>
+        <div id="board" style="width:400px"></div>
     </div>
 
 </body>
@@ -150,32 +164,18 @@
 
         url = "https://lichess.org/editor/" + FEN.split(" ").join("_");
 
-        url_container = document.getElementById("urls");
+        var a = document.getElementById('url');
 
-        //var div = document.createElement("div");
-        var a = document.createElement('a');
-        //div.appendChild(a);
+        var text = document.createTextNode(url);
 
-        var new_url = document.createTextNode("Your game: " +url);
-        a.appendChild(new_url);
+        a.textContent = url;
+
         a.title = "Your Game";
         a.href = url;
         a.target = "_blank";
 
+        var chessBoard = ChessBoard("board", FEN);
 
-        url_container.appendChild(a);
-        //url_container.appendChild(div);
-
-
-        var newBoardDiv = document.createElement("div");
-        newBoardDiv.id = "board" + generated;
-        newBoardDiv.style = "width:400px";
-
-        url_container.appendChild(newBoardDiv);
-
-        var chessBoard = ChessBoard(newBoardDiv.id, FEN);
-
-        generated++;
     }
 
     function getPieces(id) {
